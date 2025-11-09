@@ -14,50 +14,82 @@
 
 #include <iostream>
 #include <cassert>
-/*
-int main(){
-    char first[10][50] = {"god", "act", "master"};
-    int first_count = 3
-    char second[10][50] = {"dog", "cat", "stream"};
-    int second_count = 3
-    for (i = 0; i < first_count; i=i+1){
+#include <cstring>
+using namespace std;
 
+void sort_up(char* words){
+    int n = strlen(words);// создаем массив
+    /*  
+    открываем первый цикл по words и останавливаясь на первой букве "b"
+    открываем второй цикл по words и пока в первом стоим на первой букве "b" здесь открываем аналогичный
+    цикл и у нас получается в из первой b открывается новый banana и в нём проходятся по всем буквам,
+    потом мы попадаем во вторую a(из главного цикла) и также проходимся по всем буквам.
+    ! Во время этого прохождения мы каждый раз сравниваем соседние буквы и если левая больше, то мы переставляем их местами
+    */
+    for (int i = 0; i < n; i=i+1){ 
+        for (int j = i; j < n-1; j=j+1){
+            if (words[j] > words[j+1]) {
+                swap (words[j], words[j+1]);
+            }
+        }
     }
 }
-*/
-
-
-    // char ch = 'A';
-    // std:: cout << int(ch) << std:: endl;
-/* 
-int ascii_value(char* word){
-    int general_value = 0;
-    for (int i = 0; i != '\0'; i = i+1){
-        general_value = int(word[i])+general_value;
-    
+void make_lower(char* word) { //Звёздочка для работы с оригиналом(лезем сразу в ячейку памяти и меняем значение), переменная word хранит адрес(указатель)
+    for (int i = 0; word[i] != '\0' ; i = i+1) { // '\0' - это символ конца строки("Red" хранится как: 'R' 'e' 'd' '\0')
+        //Если буква большая
+        if (word[i] >= 'A' && word[i] <= 'Z') { //то есть если у нас буква в диапазоне от A-Z(65-90), то прибавляем к ней 32, чтобы попасть на диапазон малых букв
+            word[i] = word[i] + 32; // Чтобы изменить кодировку на малые, по таблице кодировки ASCII
+        }
     }
-    return general_value;
 }
+void remove_space(char* space_word){
+    int j = 0;
+    for (int i = 0; i < strlen(space_word); i=i+1){ 
+        if (space_word[i] != ' '){ // Если НЕ пробел, то входим в if
+            swap (space_word[j], space_word[i]); //
+            j = j+1; // Прибавляем каждый раз, когда у нас НЕ пробел
+            // В итоге i всегда движется вперед, а j движется вперед только если нет пробелов и при замене j на i
+            // то есть у нас в j перекидываются только НЕпробельные символы и только после этого мы делаем j+1
+            // В итоге у нас пустота которая щас в j заменяется на символ и j идёт дальше
+            // после цикла все пробелы в конце
+        }
+    }
+    space_word[j] = '\0'; // уже обновлённый j(после последнего НЕпробельного) заменяется на конец строки
+}
+
+
+int proverka(char word1[], char word2[]){
+    remove_space(word1);
+    remove_space(word2);
+    make_lower(word1);
+    make_lower(word2);
+    sort_up(word1);
+    sort_up(word2);
+    int anagram = false;
+    for(int i = 0; i < strlen(word1); i=i+1){
+        if (word1[i] != word2[i]){
+            break;
+            }
+        else return true;
+    }
+}
+
 int main(){
-    char slowo[50] = "dog";
-    int val = ascii_value(slowo);
-    std:: cout << val << std:: endl;
+    char A[] = "banana";
+    char B[] = "nananab";
+    assert(proverka(A, B) == true);
+    std:: cout << "Test complete1";
+
+    char C[] = "ban a an";
+    char D[] = "abn a na";
+    assert(proverka(C, D) == true);
+    std:: cout << "Test complete2";
+
+    char E[] = "bAn a an";
+    char F[] = "aBn A Na";
+    assert(proverka(E, F) == true);
+    std:: cout << "Test complete3";
     return 0;
 }
-*/
-int sortt(char* word){
-    for (int i = 0; i != '\0'; i = i+1){
-        word[i] = int(word[i]);
-    }
-    
-}
-int main(){
-    char slowo[50] = "banana";
-    char empty[50]
-    for (int i = 0; slowo[i] != '\0'; i=i+1){ // если сравнивать просто i != '\0', то у нас цикл оборвётся моментально, тк '\0' это нулевой символ и с него начинается слово(и заканчивается тоже)
-        empty[i] = int(slowo[i]);
-        std:: cout << int(slowo[i]) << std:: endl;
-        std:: cout << empty << std:: endl;
-    }
-    return 0;
-}
+
+

@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstring>
+
+
+
 using namespace std;
 /*
 1) Что такое size_t и зачем присваивать n = strlen(words)?
@@ -62,16 +65,17 @@ void make_lower(char* word) { //Звёздочка для работы с ори
     }
 }
 
-
-int main(){
-    char words1[10] = "banana"; // создаем массив
-    char words2[10] = "bAnAna";
-    // запускаем цикл по длине строки массива
-    // cout << int(words[i]) << (words[i]) << endl; // выводим int-вое значение буквы массива(по ASCII)
-    cout << "Anagram 1:" << words1 << endl;
-    sort_down(words1);
-    cout << "Anagram 2:" << words1 << endl;
-
-    return 0;
+void remove_space(char* space_word){
+    int j = 0;
+    for (int i = 0; i < strlen(space_word); i=i+1){ 
+        if (space_word[i] != ' '){ // Если НЕ пробел, то входим в if
+            swap (space_word[j], space_word[i]); //
+            j = j+1; // Прибавляем каждый раз, когда у нас НЕ пробел
+            // В итоге i всегда движется вперед, а j движется вперед только если нет пробелов и при замене j на i
+            // то есть у нас в j перекидываются только НЕпробельные символы и только после этого мы делаем j+1
+            // В итоге у нас пустота которая щас в j заменяется на символ и j идёт дальше
+            // после цикла все пробелы в конце
+        }
+    }
+    space_word[j] = '\0'; // уже обновлённый j(после последнего НЕпробельного) заменяется на конец строки
 }
-

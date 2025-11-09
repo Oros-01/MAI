@@ -61,7 +61,7 @@ int proverka(char words[][50], int word_count){
 }
 int main(){
     char test_words1[2][50] = {"meow", "meOw"};
-    assert(proverka(test_words1, 2) == 1);
+    assert(proverka(test_words1, 2) == 1); // Тест счетчика, если посчитал кол-во уникальных слов, то complete
     std:: cout << "Test complete" ;
     return 0;
 
