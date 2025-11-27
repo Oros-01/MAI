@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 
 int main(){
     int word_count = 2;
@@ -16,4 +16,12 @@ int main(){
         }   
     }
 return 0;
-}
+}*/
+std:: array <int, 5>//тип данных и размер массива
+// switch (s) case заменяет многоразовое написание if else(разобраться)
+//
+/* struct *name* {
+    тип данных название;
+    тип данных название;
+    тип данных название;
+} */
