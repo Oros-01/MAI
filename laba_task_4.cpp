@@ -2,6 +2,7 @@
 #include <array>
 #include <string>
 #include <vector>
+using namespace std;
 /*Уроки и дни недели  
 - Объект: урок (идентификатор, предмет, аудитория, день недели).  
 - Категории: рабочие дни (например: пн–пт).  
@@ -17,16 +18,22 @@ size_t - беззнаковый целый тип для хранения раз
 2. Создаем структуру(шаблон)
 3. Заполняем несколько шаблонов
 */
-enum class class_name {Math, History, Rus_lang, Eng_lang, Phisics,}
-enum class days {Monday, Tuesday, Wednesday, Thursday, Friday, Saturday}
-vector<char> rooms {R100, R101, R102, R103, R104, R105}
+enum class days {Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, COUNT}
 
-struct classes_days {
+struct lesson {
 int id;
 string subject;
-days days;
-string rooms;
+int room;
+days day;
 }
+int lesson_count(vector<lesson> list, days day){ // вектор массив с типом данным lesson, с названием list, состоящий из day
+    day_count = 6;
+    for (int i = 0; i <= day_count; i= i+1){
+        cout << day << endl;
+        return 0;
+    }
+}
+
 
 
 
