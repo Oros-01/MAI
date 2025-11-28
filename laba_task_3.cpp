@@ -86,17 +86,17 @@ int main(){
     char A[] = "banana";
     char B[] = "nananab";
     assert(proverka(A, B) == true);
-    std:: cout << "Test complete1";
+    std:: cout << " Test complete1 "<< endl;
 
     char C[] = "ban a an";
     char D[] = "abn a na";
     assert(proverka(C, D) == true);
-    std:: cout << "Test complete2";
+    std:: cout << " Test complete2 "<<endl;
 
     char E[] = "bAn a an";
     char F[] = "aBn A Na";
     assert(proverka(E, F) == true);
-    std:: cout << "Test complete3";
+    std:: cout << " Test complete3 "<<endl;
     return 0;
 }
 
