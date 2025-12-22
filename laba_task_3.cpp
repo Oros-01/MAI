@@ -73,19 +73,22 @@ int proverka(char word1[], char word2[]){
     make_lower(word2);
     sort_up(word1);
     sort_up(word2);
-    int anagram = false;
-    for(int i = 0; i < strlen(word1); i=i+1){
-        if (word1[i] != word2[i]){
-            break;
-            }
-        else return true;
+    if (strlen(word1) != strlen(word2)) {
+        return false;
     }
+    for(int i = 0; i < strlen(word1); i = i + 1){
+        if (word1[i] != word2[i]){
+            return false;
+        }
+    }
+    return true;
+
 }
 
 int main(){
     char A[] = "banana";
     char B[] = "nananab";
-    assert(proverka(A, B) == true);
+    assert(proverka(A, B) == false);
     std:: cout << " Test complete1 "<< endl;
 
     char C[] = "ban a an";
