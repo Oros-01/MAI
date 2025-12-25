@@ -106,3 +106,7 @@ bool obrabotka(const string &input)
 4. **INPUT = "ab"** → результат `false`
 5. **INPUT = "testABC"** → результат `true`
 
+# Схема
+
+![alt text](Scheme.png)
+
