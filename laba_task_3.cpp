@@ -85,7 +85,7 @@ int proverka(char word1[], char word2[]){
 
 }
 
-int main(){
+void tests(){
     char A[] = "banana";
     char B[] = "nananab";
     assert(proverka(A, B) == false);
@@ -100,7 +100,21 @@ int main(){
     char F[] = "aBn A Na";
     assert(proverka(E, F) == true);
     std:: cout << " Test complete3 "<<endl;
-    return 0;
+
+    char G[] = " ";
+    char H[] = " ";
+    assert(proverka(G, H) == true);
+    std:: cout << " Test complete4 "<<endl;
+
+    char I[] = "";
+    char J[] = "aBn A Na";
+    assert(proverka(I, J) == false);
+    std:: cout << " Test complete5 "<<endl;
+    //return 0;
 }
 
+int main(){
+    tests();
+    return 0;
+}
 
