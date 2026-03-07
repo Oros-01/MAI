@@ -31,8 +31,8 @@ bool isLetterA(const char symbol){
 
 
 void transition (Automaton& aut, const char input) {
-    switch (aut.status){
-        case State::Start:
+    switch (aut.status){ // смотрим на текущее состояние автомата
+        case State::Start: // Действие если наше состояние Start
             if (isLetterC(input)) {
                 aut.status = State::Found_C;
             }
@@ -82,7 +82,7 @@ bool obrabotka(const string &input){
         }
     }
 
-    if (aut1.status == State::Found_ABC) {
+    if (aut1.status == State::Found_ABC) { // единственный упешный случай
         return true;
     } else {
         return false;

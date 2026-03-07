@@ -14,6 +14,7 @@
 //strlen(*name*) возвращает длину строки(без '\0'), не работает без <cstring>
 // переделать на векторы
 // узнать как работать с кучей
+//
 #include <iostream>
 #include <cstring> 
 #include <cassert>
@@ -27,7 +28,7 @@ void make_lower(char* word) { //Звёздочка для работы с ори
     }
 }
 int proverka(char words[][50], int word_count){
-    char uniq_words[word_count][50];
+    char uniq_words[10][50];
     int uniq_count = 0;
     for (int i = 0; i <word_count; i = i+1) {
         make_lower(words[i]);
