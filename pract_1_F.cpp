@@ -10,9 +10,9 @@ int main(){
     int temple2 = 0;
     cin >> a;
     cin >> b;
-    temple1 = a
-    temple2 = b
-    a = temple2
-    b = temple1
-    cout << a << "," << b << endl;
+    temple1 = a;
+    temple2 = b;
+    a = temple2;
+    b = temple1;
+    cout << a << " " << b << endl;
 }
