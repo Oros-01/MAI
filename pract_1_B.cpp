@@ -1,16 +1,14 @@
 #include <iostream>
 using namespace std;
 
-int main(){
-    int rub = 0;
-    float kop = 0;
-    int n = 0;
-    cin >> rub;
-    cin >> kop;
-    cin >> n;
-    float summaRub = ((n*rub) + (n*(kop/100)));
-    cout << "Сумма в рублях: " << summaRub << endl;
-    cout << "Сумма в копейках: " << summaRub*100 << endl;
-
+int main() {
+    int rub, kop, n;
+    cin >> rub >> kop >> n;
+    int totalKop = (rub * 100 + kop) * n;
+    int resultRub = totalKop / 100;
+    int resultKop = totalKop % 100;
+    
+    cout << resultRub << " " << resultKop << endl;
+    
     return 0;
 }
