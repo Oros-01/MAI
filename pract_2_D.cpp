@@ -12,7 +12,7 @@ int main(){
     cin >> k;
 
     int Schoko = n*m;
-    if(Schoko/2 >= k){
+    if((k % n == 0 || k % m == 0) && k < n * m){
         cout << "YES";
     }
     else cout << "NO";
