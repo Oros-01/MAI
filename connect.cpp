@@ -1,6 +1,6 @@
-#include<iostream>
-int main(){
-    std:: cout << "beep-bop" << std:: endl;
-
-return 0;
-}
+// git init делает из папки git-репозиторий и начинает отслеживать изменения
+/*
+git add . или git add file.cpp добавляет файл в git-репозиторий на компьютере
+но не добавляет их в сеть.
+git push пушит(добавляет) изменения уже в облачный репозиторий на самом gitlab/github
+*/
