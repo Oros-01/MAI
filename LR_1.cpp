@@ -14,20 +14,39 @@ void classicBouble(int arr[], int size){
     }
 }
 
-void flagSorted(int arr[], int size){ //неправильно.
-    bool changed = true;
-    for(int i = 1; i < size; i++){
-        while(changed){
-            for(int j = 0; j < size; j++){
-                if(arr[i]<arr[j]){
-                    swap(arr[i], arr[j]);
-                    changed = true;
-                }
-                else changed = false;
+void flagBubble(int arr[], int size, long long &comps, long long &swaps){
+    for(int i = 0; i < size - 1; i++){
+        bool swapped = false;
+        for(int j = 0; j < size - 1 - i; j++){
+            comps++;
+            if(arr[j] > arr[j+1]){
+                swap(arr[j], arr[j+1]);
+                swaps++;
+                swapped = true;
             }
         }
+        if(!swapped) break;
     }
 }
+
+void boundaryBubble(int arr[], int size, long long &comps, long long &swaps){
+    int boundary = size - 1;  // граница — до куда идём во внутреннем цикле
+    while(boundary > 0){
+        int lastSwap = 0;     // индекс последнего обмена в этом проходе
+        for(int j = 0; j < boundary; j++){
+            comps++;
+            if(arr[j] > arr[j+1]){
+                swap(arr[j], arr[j+1]);
+                swaps++;
+                lastSwap = j; // запоминаем, где был последний обмен
+            }
+        }
+        boundary = lastSwap;  // следующий проход — только до этого места
+        // если обменов не было, lastSwap = 0, boundary = 0, цикл завершится
+    }
+}
+
+
 
 int main(){
     int size;
