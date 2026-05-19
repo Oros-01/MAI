@@ -1,31 +1,13 @@
 #include <iostream>
 using namespace std;
 
-void printSquare(int number){
-    int i = 1;
-    while((i*i) <= number){
-        cout << i*i << ", ";
-        if((i*i) >= number){
-            cout << ".";
-            
-        }
-            
-        i++;
+int main() {
+    int N;
+    cin >> N;
+    
+    for(int i = 1; i * i <= N; i++) {
+        cout << i * i << " ";
     }
-}
-
-
-int main(){
-    int N = 0;
-    cout << "Введите число: " << endl;
-    if (!(cin >> N) || N < 0 || N > 10000){
-        cout << "НЕВЕРНЫЙ ВВОД!" << endl;
-        return 1;
-    }
-    else {
-        printSquare(N);
-        cout << endl;
-    }
-
+    
     return 0;
 }
