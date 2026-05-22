@@ -18,7 +18,7 @@ using namespace std;
 void classicBubble(int arr[], int size, long long &comps, long long &swaps) {
     for (int i = 0; i < size - 1; i++) {
         for (int j = 0; j < size - 1; j++) {
-            comps++;
+            comps++; //на каждый j++ + одно сравнение
             if (arr[j] > arr[j+1]) {
                 swap(arr[j], arr[j+1]);
                 swaps++;
