@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <chrono>
+
+auto_start = chrono::high resolution clock::now()
 //ofstream для вывода в файл
 //ifstream для вывода в файл
 using namespace std;
@@ -101,6 +104,7 @@ int main(){
     }
     out.close();
 
-
+    auto_stop = chrono::high resolution clock::now()
+    
     return 0;
 }
