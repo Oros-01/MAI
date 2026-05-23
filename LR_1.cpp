@@ -1,12 +1,16 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
-#include <chrono>
-
-auto_start = chrono::high resolution clock::now()
 //ofstream для вывода в файл
 //ifstream для вывода в файл
+#include <cstring>
+#include <chrono>
 using namespace std;
+auto start = chrono::high_resolution_clock::now(); //auto - автоматический тип данных
+            //подпространство имён(std пронстранство, chrono вложенное пространство)
+                    //high_resolution_clock - класс(пользовательский тип данных)
+                            //now - функция берущая время в данный момент
+
+
 
 /*void classicBubble(int arr[], int size){
     for(int i = 1; i < size; i++){
@@ -104,7 +108,9 @@ int main(){
     }
     out.close();
 
-    auto_stop = chrono::high resolution clock::now()
-    
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    long long time_spend = duration.count();
+    cout << time_spend << endl;
     return 0;
 }
