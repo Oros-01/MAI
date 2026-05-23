@@ -3,10 +3,6 @@
 		{
 			"name": "informatics_laba_2025_Orosv2",
 			"path": "."
-		},
-		{
-			"name": "Web_server_mai",
-			"path": "../Web_server_mai"
 		}
 	],
 	"settings": {
