@@ -1,4 +1,5 @@
 from flask import Flask, send_file
+import os
 
 app = Flask(__name__)
 
@@ -27,4 +28,5 @@ def state():
     return {'pressed': button_pressed}
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))  # берём порт от Render, или 5000 локально
+    app.run(host='0.0.0.0', port=port, debug=False)
