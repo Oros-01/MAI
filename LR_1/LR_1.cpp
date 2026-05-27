@@ -117,7 +117,7 @@ int main() {
             DataType type = (DataType)t;
             generateArray(arr, n, type);
 
-            // --- алгоритм 1: классический пузырёк ---
+            //алгоритм 1: классический пузырёк
             long long comps = 0, swaps = 0;
             memcpy(buf, arr, n * sizeof(int));
 
@@ -129,7 +129,7 @@ int main() {
             out << n << ";" << typeName(type) << ";classic;"
                 << comps << ";" << swaps << ";" << time_us << "\n";
 
-            // --- алгоритм 2: пузырёк с флагом ---
+            //алгоритм 2: пузырёк с флагом
             comps = 0; swaps = 0;
             memcpy(buf, arr, n * sizeof(int));
 
@@ -141,7 +141,7 @@ int main() {
             out << n << ";" << typeName(type) << ";flag;"
                 << comps << ";" << swaps << ";" << time_us << "\n";
 
-            // --- алгоритм 3: пузырёк с границей ---
+            //алгоритм 3: пузырёк с границей
             comps = 0; swaps = 0;
             memcpy(buf, arr, n * sizeof(int));
 
