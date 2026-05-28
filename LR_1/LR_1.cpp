@@ -70,7 +70,8 @@ void flagBubble(int arr[], int size, long long &comps, long long &swaps){
         if(!swapped) break;
     }
 }
-
+//самая крутая, сразу срезает всю часть массива, после верхней границы последнего обмена
+//то есть, всё что дальше последнего swap(lastSwap) уже отсортированои туда идти незачем
 void boundaryBubble(int arr[], int size, long long &comps, long long &swaps){
     int boundary = size - 1;  // граница — до куда идём во внутреннем цикле
     while(boundary > 0){
@@ -105,7 +106,8 @@ int main() {
     int numSizes = 7;
 
     int arr[10000];
-    int buf[10000];
+    int buf[10000]; //buf нужен для копирования одного и того же массива,
+                    //чтобы 3 разные сортировки его проработали не меняя оригинал.
 
     ofstream out("results.csv");
     out << "Size;DataType;Algorithm;Comparisons;Swaps;Time_us\n";
@@ -114,12 +116,20 @@ int main() {
         int n = sizes[s];
 
         for (int t = 0; t < 3; t++) {
-            DataType type = (DataType)t;
+            DataType type = (DataType)t; // приведение типа данных (random, sorted, reversed)
             generateArray(arr, n, type);
+
+            //1. Создаётся массив одного типа
+            //2. Все 3 сортировки его обрабатывают и записывают данные в таблицу
+            //3. начинается новый цикл(создаётся массив следующего типа, например reversed)
 
             //алгоритм 1: классический пузырёк
             long long comps = 0, swaps = 0;
-            memcpy(buf, arr, n * sizeof(int));
+            memcpy(buf, arr, n * sizeof(int)); //sizeof оператор, который возвращает размер типа данных
+                                               // в байтах, memcpy Работает на уровне байт и ей нужно знать
+                                               // сколько байт скопировать, если n = 10, то это 40 байт, поэтому
+                                               // n * 4(то есть sizeof(int)) = 40
+                                               // можно писать n * 4, но int не везде = 4(универсальность кода)
 
             auto start = chrono::high_resolution_clock::now();
             classicBubble(buf, n, comps, swaps);
