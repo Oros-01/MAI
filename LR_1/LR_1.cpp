@@ -4,7 +4,7 @@
 //ifstream для вывода в файл
 #include <cstring>
 #include <chrono>
-#include <cstdlib> 
+#include <cstdlib> // rand(), srand()
 using namespace std;
 //auto start = chrono::high_resolution_clock::now(); //auto - автоматический тип данных
             //подпространство имён(std пронстранство, chrono вложенное пространство)
@@ -29,8 +29,8 @@ enum DataType {
 void generateArray(int arr[], int size, DataType type) {
     if (type == RANDOM) {
         for (int i = 0; i < size; i++) {
-            arr[i] = rand() % 64001 - 32000;
-        }
+            arr[i] = rand() % 64001 - 32000; //rand всегда пустая и выдаёт случайное число, потом берётся остаток
+        }                                    //и из него вычитается 32000: Итоговый диапазон(-32000, 32000)
     }
     else if (type == SORTED) {
         for (int i = 0; i < size; i++) {
@@ -100,7 +100,7 @@ const char* typeName(DataType type) {
 
 int main() {
     auto seed = chrono::high_resolution_clock::now().time_since_epoch().count();
-    srand(seed);
+    srand(seed); //отправная точка
 
     int sizes[] = {10, 100, 500, 1000, 2000, 5000, 10000};
     int numSizes = 7;
@@ -112,7 +112,7 @@ int main() {
     ofstream out("results.csv");
     out << "Size;DataType;Algorithm;Comparisons;Swaps;Time_us\n";
 
-    for (int s = 0; s < numSizes; s++) {
+    for (int s = 0; s < numSizes; s++) { //генирим массивы размерами из size
         int n = sizes[s];
 
         for (int t = 0; t < 3; t++) {
