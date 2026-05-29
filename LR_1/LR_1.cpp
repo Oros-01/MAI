@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 //ofstream для вывода в файл
-//ifstream для вывода в файл
-#include <cstring>
+//ifstream для ввода в файл
+#include <cstring> //memcpy
 #include <chrono>
 #include <cstdlib> // rand(), srand()
 using namespace std;
@@ -10,15 +10,7 @@ using namespace std;
             //подпространство имён(std пронстранство, chrono вложенное пространство)
                     //high_resolution_clock - класс(пользовательский тип данных)
                             //now - функция берущая время в данный момент
-/*void classicBubble(int arr[], int size){
-    for(int i = 1; i < size; i++){
-        for(int j = 0; j < size; j++){
-            if(arr[i]<arr[j]){
-                swap(arr[i], arr[j]);
-            }
-        }
-    }
-}*/
+
 
 enum DataType {
     RANDOM   = 0,
@@ -29,8 +21,8 @@ enum DataType {
 void generateArray(int arr[], int size, DataType type) {
     if (type == RANDOM) {
         for (int i = 0; i < size; i++) {
-            arr[i] = rand() % 64001 - 32000; //rand всегда пустая и выдаёт случайное число, потом берётся остаток
-        }                                    //и из него вычитается 32000: Итоговый диапазон(-32000, 32000)
+            arr[i] = rand() % 64001 - 32000; //rand() — функция без параметров, возвращает псевдослучайное целое от 0 до RAND_MAX"
+        }                                    //берёом от него остаток 64000 и получается число от 0 до 64000 и из него вычитается 32000: Итоговый диапазон [-32000, 32000]
     }
     else if (type == SORTED) {
         for (int i = 0; i < size; i++) {
@@ -99,7 +91,7 @@ const char* typeName(DataType type) {
 
 
 int main() {
-    auto seed = chrono::high_resolution_clock::now().time_since_epoch().count();
+    auto seed = chrono::high_resolution_clock::now().time_since_epoch().count(); //Если не брать seed через замер времени, то srand возьмёт значение по умолчению(1) - srand(1) будет использоваться всегда и rand() будет давать одну и ту же последовательность
     srand(seed); //отправная точка
 
     int sizes[] = {10, 100, 500, 1000, 2000, 5000, 10000};
@@ -169,52 +161,3 @@ int main() {
     cout << "Done. Results are uploaded in results.csv" << endl;
     return 0;
 }
-
-/*
-int main(){
-    int size;
-    cin >> size;
-    int arr[size];
-    int bufer[size];
-
-    for(int i = 0; i < size; i++){
-        cin >> arr[i];
-    }
-
-    long long comps, swaps;
-    ofstream outRes("results.csv");
-    outRes << "Algorithm;Comparisons;Swaps\n";
-
-
-    for(int i = 0; i < size; i++){
-        cout << arr[i] << " ";
-    }
-    cout << endl; 
-
-    //классическая сортировка
-    memcpy(bufer, arr, size * sizeof(int));
-    classicBubble(bufer, size, comps, swaps);
-    outRes << "classic;" << comps << ";" << swaps << "\n";
-
-    cout << endl;
-
-    comps = 0; swaps = 0;
-    for(int i = 0; i < size; i++){
-        cout << arr[i] << " ";
-    }
-
-    ofstream outHello("hello.csv"); //создаёт csv файл
-    if (outHello.is_open()){ // ведёт запись в csv файл
-        for(int i = 0; i < size; i++){
-            outHello << arr[i] << ";";
-        }
-    }
-    //outHello.close();
-
-    auto stop = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-    long long time_spend = duration.count();
-    cout << time_spend << endl;
-    return 0;
-}
-*/

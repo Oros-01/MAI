@@ -76,9 +76,22 @@
 
 #pagebreak()
 
+== Блок-схема классического пузырька
+
+#image("graphs/Scheme_classic_Bubble.jpg")
+
+#pagebreak()
+
 == Блок-схема пузырька с флагом
 
-#image("graphs/scheme_bubble_flag.drawio.jpg")
+#image("graphs/scheme_bubble_flag.jpg")
+
+#pagebreak()
+
+== Блок-схема пузырька с динамической границей
+
+#image("graphs/Scheme_boundary.png")
+
 
 #pagebreak()
 
@@ -123,7 +136,7 @@
 #image("graphs/swaps_random.png")
 
 === Отсортированные данные
-#image("graphs/swaps_sorted.png")
+#image("graphs/swaps_sorted.png")typst compile report.typ
 
 === Обратный порядок
 #image("graphs/swaps_reversed.png")
