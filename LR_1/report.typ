@@ -78,7 +78,7 @@
 
 == Блок-схема классического пузырька
 
-#image("graphs/Scheme_classic_Bubble.jpg")
+#image("graphs/Scheme_classic_bubble.jpg")
 
 #pagebreak()
 
