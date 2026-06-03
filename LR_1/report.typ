@@ -76,9 +76,11 @@
 
 #pagebreak()
 
-== Блок-схема классического пузырька
+#block(breakable: false)[
+  == Блок-схема классического пузырька
 
-#image("graphs/Scheme_classic_bubble.jpg")
+  #image("graphs/Scheme_classic_bubble.jpg")
+]
 
 #pagebreak()
 
@@ -90,7 +92,7 @@
 
 == Блок-схема пузырька с динамической границей
 
-#image("graphs/Scheme_boundary.png")
+#image("graphs/Scheme_boundary.jpg")
 
 
 #pagebreak()
