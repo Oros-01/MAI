@@ -16,7 +16,7 @@ HTML = """
 
   <button
     style="padding:20px 40px; font-size:20px; cursor:pointer"
-    onmousedown="send('/press')" <!-- Логика мышки/пальца -->
+    onmousedown="send('/press')" 
     onmouseup="send('/reset')"
     ontouchstart="send('/press')"
     ontouchend="send('/reset')"
