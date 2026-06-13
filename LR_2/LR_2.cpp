@@ -37,12 +37,12 @@ string formatSize(long long bytes) {
 
     // Форматируем вручную через целую и дробную часть
     long long whole = static_cast<long long>(size);
-    long long frac  = static_cast<long long>((size - whole) * 100);
+    long long frac  = static_cast<long long>((size - whole) * 100); // *100 для двух знаков после ,
     if (frac < 0) frac = -frac;
 
     string result = to_string(whole) + "." +
                     (frac < 10 ? "0" : "") + to_string(frac) +
-                    " " + suffixes[index];
+                    " " + suffixes[index]; //уже определён(в смысле KB, GB это или что-то другое)
     return result;
 }
 
@@ -91,7 +91,9 @@ int main() {
     // system() передаёт строку командному процессору cmd.exe (слайд 3)
     system(dirCmd.c_str());
 
-    // --- Читаем result.txt и фильтруем по расширению ---
+
+
+    
     // ifstream — поток для чтения файла
     ifstream f("result.txt");
     if (!f.is_open()) {
