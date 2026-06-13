@@ -36,7 +36,7 @@
 
 ---
 
-![Demo](media/gripper_demo.gif)
+<!--![Demo](media/gripper_demo.gif) -->
 
 ![Render](media/Render.png)
 
