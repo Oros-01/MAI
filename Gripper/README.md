@@ -92,7 +92,7 @@ INA219 (сила тока)
 │   ├── requirements.txt      # зависимости Python
 │   └── servak.py             # Flask веб-сервер управления захватом
 ├── media/
-│   └── gripper_demo.gif      # анимация работы механизма
+│   └── gripper_demo.gif      # анимация работы механизма(обновлю позже)
 │   └── Render.png            # рендер
 ```
 
