@@ -27,7 +27,7 @@ INA226 ina226(0x40, &Wire);
 bool ina226Ready = false;
 
 float Current_mA = 0; // последнее измеренное значение тока
-float Voltage_V = 0; // последнее измеренное значение напряжения  <-- ДОБАВЛЕНО
+float Voltage_V = 0; // последнее измеренное значение напряжения
 unsigned long lastSensorRead = 0; // millis() последнего опроса датчика
 
 //HTML-страница!!
@@ -84,7 +84,7 @@ void handleClose() { // сводим клешни
 void handleState() { // отдаём текущий ток и флаг "предмет есть/нет"
   bool objectDetected = Current_mA > CURRENT_LIMIT_MA; // сравниваем с порогом
   String json = "{\"current_mA\":" + String(Current_mA, 1) +
-                ",\"voltage_V\":" + String(Voltage_V, 2) +  // <-- ДОБАВЛЕНО
+                ",\"voltage_V\":" + String(Voltage_V, 2) +
                 ",\"objectDetected\":" + (objectDetected ? "true" : "false") + "}";
   server.send(200, "application/json", json);
 }
