@@ -1,3 +1,4 @@
+# py -3.12 maze_game.py
 # -*- coding: utf-8 -*-
 """
 Игра "Лабиринт" — симуляция навигации мобильного робота в неизвестной среде.
@@ -23,6 +24,8 @@
 """
 
 import sys
+import os
+import json
 import random
 import math
 import pygame
@@ -40,6 +43,10 @@ DIFFICULTIES = {
 DIFFICULTY_ORDER = ["easy", "medium", "hard"]
 
 TIME_OPTIONS = [30, 60, 90]  # секунды, доступные варианты лимита времени
+
+# Таблица рекордов сохраняется рядом со скриптом и переживает перезапуск игры
+LEADERBOARD_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaderboard.json")
+LEADERBOARD_MAX = 10
 
 # Область, в которую всегда вписывается лабиринт независимо от сложности
 # (при более крупном лабиринте клетки становятся мельче, но окно не меняется)
@@ -88,6 +95,46 @@ DIRS = {
     "W": (-1, 0),
 }
 OPPOSITE = {"N": "S", "S": "N", "E": "W", "W": "E"}
+
+
+# ---------------------------------------------------------------------------
+# ТАБЛИЦА РЕКОРДОВ (сохраняется в JSON-файл рядом со скриптом)
+# ---------------------------------------------------------------------------
+
+def load_leaderboard():
+    """Загружает сохранённые рекорды с диска. Если файла нет или он
+    повреждён — просто начинаем с пустой таблицы, не роняя игру."""
+    try:
+        with open(LEADERBOARD_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            return data
+    except (OSError, json.JSONDecodeError):
+        pass
+    return []
+
+
+def save_leaderboard(records):
+    try:
+        with open(LEADERBOARD_FILE, "w", encoding="utf-8") as f:
+            json.dump(records, f, ensure_ascii=False, indent=2)
+    except OSError:
+        pass  # отсутствие прав на запись не должно ломать игру
+
+
+def add_leaderboard_record(records, time_used, difficulty_label, time_limit):
+    """Добавляет новый результат, сортирует по времени прохождения (лучшее —
+    наименьшее) и оставляет только LEADERBOARD_MAX лучших записей."""
+    records = list(records)
+    records.append({
+        "time": round(time_used, 2),
+        "difficulty": difficulty_label,
+        "time_limit": time_limit,
+    })
+    records.sort(key=lambda r: r["time"])
+    records = records[:LEADERBOARD_MAX]
+    save_leaderboard(records)
+    return records
 
 
 # ---------------------------------------------------------------------------
@@ -307,6 +354,9 @@ class Game:
         self.selected_difficulty = "medium"
         self.selected_time = 60
 
+        # Таблица рекордов — загружается один раз при запуске программы
+        self.leaderboard = load_leaderboard()
+
         self._build_menu_buttons()
         self._build_sidebar_buttons()
 
@@ -422,6 +472,12 @@ class Game:
             if self.robot.cell == self.maze.end:
                 self.state = STATE_WON
                 self.result_time_used = self.time_limit - self.time_left
+                self.leaderboard = add_leaderboard_record(
+                    self.leaderboard,
+                    self.result_time_used,
+                    DIFFICULTIES[self.selected_difficulty]["label"],
+                    self.time_limit,
+                )
 
     # ------------------------------------------------------------------
     # ОТРИСОВКА: МЕНЮ
@@ -455,6 +511,43 @@ class Game:
 
         hint = self.font_small.render("Управление в игре: стрелки", True, COLOR_TEXT_DIM)
         surface.blit(hint, hint.get_rect(center=(area_cx, self.btn_start.rect.bottom + 30)))
+
+        self.draw_leaderboard_panel(surface)
+
+    def draw_leaderboard_panel(self, surface):
+        panel_rect = pygame.Rect(self.panel_x, MARGIN, SIDEBAR_WIDTH - MARGIN, MAZE_AREA_H)
+        pygame.draw.rect(surface, COLOR_PANEL, panel_rect, border_radius=10)
+
+        x = self.panel_x + 20
+        y = MARGIN + 20
+
+        title = self.font_title.render("Таблица рекордов", True, COLOR_TEXT)
+        surface.blit(title, (x, y))
+        y += 30
+
+        subtitle = self.font_small.render("Топ-10 лучших результатов", True, COLOR_TEXT_DIM)
+        surface.blit(subtitle, (x, y))
+        y += 34
+
+        if not self.leaderboard:
+            empty = self.font_small.render("Рекордов пока нет —", True, COLOR_TEXT_DIM)
+            surface.blit(empty, (x, y))
+            y += 22
+            empty2 = self.font_small.render("пройди лабиринт первым!", True, COLOR_TEXT_DIM)
+            surface.blit(empty2, (x, y))
+            return
+
+        for i, record in enumerate(self.leaderboard, start=1):
+            rank_color = COLOR_WIN if i <= 3 else COLOR_TEXT
+            line1 = self.font_small.render(f"{i}. {record['time']:.2f} с", True, rank_color)
+            surface.blit(line1, (x, y))
+            y += 22
+
+            meta_text = self.font_small.render(
+                f"    {record['difficulty']} · лимит {record['time_limit']} с", True, COLOR_TEXT_DIM
+            )
+            surface.blit(meta_text, (x, y))
+            y += 22
 
     def handle_menu_click(self, pos):
         for key, btn in self.diff_buttons.items():
@@ -620,6 +713,39 @@ class Game:
         self.btn_menu.draw(surface)
         self.btn_exit.draw(surface)
 
+    def draw_result_overlay(self, surface):
+        """Крупная надпись поверх игрового поля при победе/поражении —
+        чтобы результат было невозможно не заметить."""
+        ox, oy = self.maze_origin
+        maze_px_w, maze_px_h = self.maze_px_size
+
+        overlay = pygame.Surface((maze_px_w, maze_px_h), pygame.SRCALPHA)
+        overlay.fill((10, 11, 15, 175))
+        surface.blit(overlay, (ox, oy))
+
+        cx = ox + maze_px_w / 2
+        cy = oy + maze_px_h / 2
+
+        if self.state == STATE_WON:
+            main_text = "ПОБЕДА!"
+            main_color = COLOR_WIN
+            sub_text = f"Время прохождения: {self.result_time_used:.2f} сек"
+        else:
+            main_text = "ВРЕМЯ ВЫШЛО"
+            main_color = COLOR_LOSE
+            sub_text = "Попробуй ещё раз!"
+
+        main_surf = self.font_huge.render(main_text, True, main_color)
+        surface.blit(main_surf, main_surf.get_rect(center=(cx, cy - 24)))
+
+        sub_surf = self.font_medium.render(sub_text, True, COLOR_TEXT)
+        surface.blit(sub_surf, sub_surf.get_rect(center=(cx, cy + 24)))
+
+        hint_surf = self.font_small.render(
+            "«Новая игра» — ещё раз · «Настройки» — сменить уровень", True, COLOR_TEXT_DIM
+        )
+        surface.blit(hint_surf, hint_surf.get_rect(center=(cx, cy + 60)))
+
     def draw(self):
         self.screen.fill(COLOR_BG)
         if self.state == STATE_MENU:
@@ -627,6 +753,8 @@ class Game:
         else:
             self.draw_maze(self.screen)
             self.draw_panel(self.screen)
+            if self.state in (STATE_WON, STATE_LOST):
+                self.draw_result_overlay(self.screen)
         pygame.display.flip()
 
     # ------------------------------------------------------------------
