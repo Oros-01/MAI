@@ -59,7 +59,7 @@ void flagBubble(int arr[], int size, long long &comps, long long &swaps){
                 swapped = true;
             }
         }
-        if(!swapped) break;
+        if(!swapped) break; //
     }
 }
 //самая крутая, сразу срезает всю часть массива, после верхней границы последнего обмена
