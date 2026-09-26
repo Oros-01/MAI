@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -7,17 +8,21 @@ using namespace std;
 template <typename T>// заменяет на нужный тип данных в функциях с одними и теми же названиями
 
 struct Person {
-    Person(int new_age, int new_name){
+    int age = 0;
+    string name;
+
+
+    Person(int new_age, string new_name){
         age = new_age;
         name = new_name;
     }
     Person() = default; //
+
     ~Person() { // деструктор — удаляет конструктор
         delete data;
-        cout << "destructor" << endl;
+        cout << "destructor for" << name << endl;
     }
-    int age = 0;
-    string name;
+
 }
 struct S1{
     S1{
