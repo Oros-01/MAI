@@ -1,6 +1,6 @@
-#include <iostream>
+#include <stdio.h>
 
 int main() {
-    std::cout << __cplusplus << "\n";
+    printf("Размер int: %zu байт\n", sizeof(int));
     return 0;
 }
