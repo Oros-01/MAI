@@ -10,6 +10,12 @@ class myvector{
         myvector(): data_(nullptr), size_(0), capacity_(0){} //конструктор с пустыми параметрами
         myvector(int size, int capacity): data_(new T[capacity]), size_(size), capacity_(capacity){} //конструктор с заданными параметрами
         // new оператор — резервирует ячейки в памяти и возвращает адрес первой ячейки.
+        myvector(const myvector& other): data_(new T[other.size_]), size(other.size_), capacity_(other.size_){
+            // здесь myvecotr& other выступает в роли ссылки на оригинальный вектор
+            for(int i = 0; i < size; i++){
+                data_[i] = other.data_[i];
+            }
+        }
         ~myvector(){
             delete[] data_;
         }
@@ -27,17 +33,31 @@ class myvector{
         } //БАМ нахуй
 
         void push_back(const T& value){
-            if (size_ == capacity_){
+            if (size_ == capacity_){ // push_back увеличит ёмкость в 2 раза, если size_ == capacity_
+                                    //или выделит ёмкость под 1 элемент, если было 0, тк 0*2 = 0(оно сломает программу)
                 //тернарный оператор: условие ? A : B, то есть если условие == true, то выполняем действие A, иначе B
                 // file://./media/ternary_operator.png
                 reserve(capacity_ == 0 ? 1 : capacity_ * 2); 
             }
-            data_[size_] = value;
+            data_[size_] = value; //в ячейке под номером size_ появляется элемент со значением value(шаблонный тип данных T позволяет засовывать char, string, int и т.д.)
             ++size_; //++x увеличивает x и отдаёт новое значение, а не старое как при x++(т.е. это префикс)
 
         }
         T& operator[](int i) { //если не написать эту магическую строку, то не сможем выводить i-й элемент массива
             return data_[i];
+        }
+        myvector& operator=(const myvector& other) {
+            if (this == &other) return *this;    // самоприсваивание: ничего не делаем
+
+            T* new_data = new T[other.size_];            // сначала выделяем новый массив
+            for (int i = 0; i < other.size_; ++i) {
+                new_data[i] = data_;               // копируем элементы оригинала
+            }
+            delete[] data_;                        // освобождаем СТАРЫЙ массив
+            data_ = new_data;                         // переключаемся на новый
+            size_ = other.size_;
+            capacity_ = other.size_;
+            return *this;
         }
 
 
