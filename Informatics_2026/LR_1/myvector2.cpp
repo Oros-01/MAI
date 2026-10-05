@@ -1,26 +1,26 @@
-#include <iostream>
+#pragma once
 #include <stdexcept>
 
 template <typename T> //шаблонный тип данных
 
-class myvector{
+class MyVector{
     public:
         //Можно создавать один и тот же конструктор,
         //комплиятор сам выбирает какой применить при создании объекта!!
-        myvector(): data_(nullptr), size_(0), capacity_(0){} //конструктор с пустыми параметрами
-        explicit myvector(size_t n, const T& value = T{}): data_(new T[n]), size_(n), capacity_(n) {
+        MyVector(): data_(nullptr), size_(0), capacity_(0){} //конструктор с пустыми параметрами
+        explicit MyVector(size_t n, const T& value = T{}): data_(new T[n]), size_(n), capacity_(n) {
             for (size_t i = 0; i < n; ++i) {
                 data_[i] = value;
             }
         } //конструктор с заданными параметрами
         // new оператор — резервирует ячейки в памяти и возвращает адрес первой ячейки.
-        myvector(const myvector& other): data_(new T[other.size_]), size_(other.size_), capacity_(other.size_){
+        MyVector(const MyVector& other): data_(new T[other.size_]), size_(other.size_), capacity_(other.size_){
             // здесь myvecotr& other выступает в роли ссылки на оригинальный вектор
             for(int i = 0; i < size_; i++){
                 data_[i] = other.data_[i];
             }
         }
-        ~myvector(){
+        ~MyVector(){
             delete[] data_;
         }
 
@@ -37,13 +37,14 @@ class myvector{
         } //БАМ нахуй
 
         void push_back(const T& value){
+            T copy = value;
             if (size_ == capacity_){ // push_back увеличит ёмкость в 2 раза, если size_ == capacity_
                                     //или выделит ёмкость под 1 элемент, если было 0, тк 0*2 = 0(оно сломает программу)
                 //тернарный оператор: условие ? A : B, то есть если условие == true, то выполняем действие A, иначе B
                 // file://./media/ternary_operator.png
                 reserve(capacity_ == 0 ? 1 : capacity_ * 2); 
             }
-            data_[size_] = value; //в ячейке под номером size_ появляется элемент со значением value(шаблонный тип данных T позволяет засовывать char, string, int и т.д.)
+            data_[size_] = copy; //в ячейке под номером size_ появляется элемент со значением value(шаблонный тип данных T позволяет засовывать char, string, int и т.д.)
             ++size_; //++x увеличивает x и отдаёт новое значение, а не старое как при x++(т.е. это префикс)
         }
 
@@ -66,9 +67,10 @@ class myvector{
             if (n < size_) {
                 size_ = n;                    // обрезаем: просто уменьшаем размер
             } else if (n > size_) {
+                T copy = value;
                 reserve(n);                   // гарантируем, что места хватит
                 for (int i = size_; i < n; ++i) {
-                    data_[i] = value;         // заполняем новые клетки
+                    data_[i] = copy;         // заполняем новые клетки
                 }
                 size_ = n;                    // теперь элементов ровно n
             }
@@ -77,6 +79,7 @@ class myvector{
 
         void insert(int pos, const T& value) {
             if (pos > size_) throw std::out_of_range("insert: bad position");
+            T copy = value;
 
             if (size_ == capacity_) {
                 reserve(capacity_ == 0 ? 1 : capacity_ * 2);  // нужно место под новый элемент
@@ -85,7 +88,7 @@ class myvector{
             for (int i = size_; i > pos; --i) {
                 data_[i] = data_[i - 1];     // сдвигаем элементы вправо
             }
-            data_[pos] = value;              // кладём value на освободившееся место
+            data_[pos] = copy;              // кладём value на освободившееся место
             ++size_;
         }
 
@@ -94,7 +97,7 @@ class myvector{
             return data_[i];
         }
 
-        myvector& operator=(const myvector& other) {
+        MyVector& operator=(const MyVector& other) {
             if (this == &other) return *this;    // самоприсваивание: ничего не делаем
 
             T* new_data = new T[other.size_];            // сначала выделяем новый массив
@@ -147,10 +150,10 @@ class myvector{
         const T* end()   const { return data_ + size_; }
 
 
-        int size() const { //метод для проверки размера объекта(вектора)
+        size_t size() const { //метод для проверки размера объекта(вектора)
             return size_;
         }
-        int capacity() const { //метод для проверки вместимости объекта(вектора)
+        size_t capacity() const { //метод для проверки вместимости объекта(вектора)
             return capacity_; //То есть возвращаем поле capacity_
         }
 
@@ -163,19 +166,3 @@ class myvector{
 
 };
 
-
-int main() {
-
-    myvector<int> v(2,3);
-    v[0] = 14;
-    v[1] = 67;
-    std::cout << v[0];
-
-    /* myvector<int> v;
-    for (int i = 0; i < 6; ++i) {
-        v.push_back(i * 10);
-        std::cout << "size=" << v.size() << " capacity=" << v.capacity() << "\n";
-    }
-    std::cout << v[0] << " " << v[5] << "\n";
-    */
-}
