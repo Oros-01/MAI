@@ -34,21 +34,18 @@ int fibonacci(int n)
 
 int main() 
 {
-    int n;
+    int n = 0;
 
     cout << "Enter number n (from 0 to 30): ";
     cin >> n;
 
-
     try 
     {
         int result = fibonacci(n);
-        cout << "Fib number" << n << " = " << result << endl; // Выводим результат
+        cout << "Fib number" << n << " = " << result << endl;
     } 
     catch (const out_of_range& e)
     {
-
-        
         cout << "Error: " << e.what() << endl; 
     }
 
