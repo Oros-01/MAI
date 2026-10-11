@@ -9,14 +9,11 @@
 //
 // Следующие шаги: удаление/добавление вершин и рёбер, связность,
 // Беллман-Форд, остовное дерево (Прим).
-
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
-
-#ifdef _WIN32
 #include <windows.h>
-#endif
 
 #include "graph.h" //весь наш граф умещён в этой строчке и для компилятора здесь не 1 строчка, а  93!
 

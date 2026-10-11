@@ -69,10 +69,10 @@ int Graph::size() const {
 }
 
 long long Graph::weight(int a, int b) const {
-    if (!is_edge(a, b)) {
+    if (!is_edge(a, b)) { //вначале проверили существование ребра, если нет, то 0
         return 0;
     }
-    return weight_[a][b];
+    return weight_[a][b]; //ребро гарантированно есть, возвращаем вес ребра
 }
 
 bool Graph::is_edge(int a, int b) const {
@@ -85,7 +85,7 @@ bool Graph::is_edge(int a, int b) const {
     return is_edge_[a][b];
 }
 
-bool Graph::add_vertex(int v) {
+bool Graph::add_vertex(int v) { //добавляем вершину
     if (v < 0) {
         return false;
     }
@@ -231,13 +231,13 @@ bool Graph::loadFromFile(const std::string& fileName) {
 
     std::string line;
     int n = 0;
-    bool n_is_read = false;
+    bool n_is_read = false; // изначально говорим что число не найдено.
 
     // Ищем первую "настоящую" строку - в ней записано число вершин.
     while (std::getline(fin, line)) {
-        std::istringstream iss(line);
-        if (iss >> n) {
-            n_is_read = true;
+        std::istringstream input_ss(line);
+        if (input_ss >> n) { // то есть как только попадает не #комментарий, то мы записываем
+            n_is_read = true; //это(первый символ) в n и тут же говорим n_is_read = true и выходим
             break;
         }
     }
@@ -252,15 +252,15 @@ bool Graph::loadFromFile(const std::string& fileName) {
 
     // Читаем списки смежности.
     while (std::getline(fin, line)) {
-        std::istringstream iss(line);
+        std::istringstream input_ss(line);
         int v;
-        if (!(iss >> v)) {
+        if (!(input_ss >> v)) {
             continue;   // пустая строка или комментарий
         }
 
         int u;
         long long w;
-        while (iss >> u >> w) {
+        while (input_ss >> u >> w) {
             if (!add_edge(v, u, w)) {
                 std::cout << "Предупреждение: ребро " << v << "-" << u
                           << " пропущено (неверные номера вершин)\n";

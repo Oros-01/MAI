@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 template <typename T> //шаблонный тип данных
+//T это тип элемента вектора, т.е. если мы делаем вектор из string, то T принимает тип данных string и тд
 
 class MyVector{
     public:
@@ -13,26 +14,46 @@ class MyVector{
                 data_[i] = value;
             }
         } //конструктор с заданными параметрами
-        // new оператор — резервирует ячейки в памяти и возвращает адрес первой ячейки.
-        MyVector(const MyVector& other): data_(new T[other.size_]), size_(other.size_), capacity_(other.size_){
-            // здесь myvecotr& other выступает в роли ссылки на оригинальный вектор
-            for(int i = 0; i < size_; i++){
+        
+
+        //конструктор копирования
+        MyVector(const MyVector& other):// здесь myvecotr& other выступает в роли ссылки на оригинальный вектор
+            data_(new T[other.size_]),//new T[n] выделяет память под n элементов и возвращает указатель на первый
+            size_(other.size_),
+            capacity_(other.size_){
+
+            for(size_t i = 0; i < size_; i++){
                 data_[i] = other.data_[i];
             }
         }
+
+        MyVector& operator=(const MyVector& other) { //при использовании внутри программы вызывает a.operator=(b)
+            if (this == &other) return *this;    // самоприсваивание: ничего не делаем(возвращаем изначальный вектор)
+
+            T* new_data = new T[other.size_];            // сначала выделяем новый массив
+            for (int i = 0; i < other.size_; ++i) {
+                new_data[i] = other.data_[i];               // копируем элементы оригинала
+            }
+            delete[] data_;                        // освобождаем СТАРЫЙ массив
+            data_ = new_data;                         // переключаемся на новый
+            size_ = other.size_;
+            capacity_ = other.size_;
+            return *this;
+        }        
+
         ~MyVector(){
             delete[] data_;
         }
 
-        void reserve(int new_cap){
+        void reserve(size_t new_cap){ //добавляем капейсити
             if (new_cap <= capacity_) return; //return Здесь значит досрочный выход из reserve, так как new_cap меньше и выделять память не надо.
 
             T* new_data = new T[new_cap]; //выделение нового массива, если new_cap > capacity_
-            for (int i = 0; i < size_; ++i){
+            for (size_t i = 0; i < size_; ++i){
                 new_data[i] = data_[i];     // копирование старых элементов в new_data
             }
-            delete[] data_; //освободили старый массив
-            data_ = new_data; //теперь data_ это наша new_data, которую мы заполнили не до конца, ведь new_cap наверняка больше чем size_
+            delete[] data_; //освободили старый массив(память, на которую указывает data_)
+            data_ = new_data; // запоминаем адрес нового массива в data_
             capacity_ = new_cap; //обновляем вместимость
         } //БАМ нахуй
 
@@ -53,21 +74,24 @@ class MyVector{
             --size_;
         }
 
-        void clear() { size_ = 0; } // делаем вектор пустым, не освобождая(почему-то) память
+        void clear() { size_ = 0; } // делаем вектор пустым, не освобождая память, capacity_ прежнее аналогично
 
-        void erase(int pos) {
+        void erase(size_t pos) {
             if (pos < 0 || pos >= size_) throw std::out_of_range("erase: bad position");
-            for (int i = pos; i < size_ - 1; ++i) {
+            for (size_t i = pos; i < size_ - 1; ++i) {
                 data_[i] = data_[i+1];     // сдвигаем элемент справа на место текущего
             }
             --size_;
         }
         
-        void resize(int n, const T& value = T{}) {
-            if (n < size_) {
+        void resize(size_t n, const T& value = T{}) { //const T& константная ссылка на T
+            if (n < size_) {                    //когда фигурная скобка пустая, то наполнение вектора будет нулями(если int, пустой строкой "", если string и тд)
                 size_ = n;                    // обрезаем: просто уменьшаем размер
-            } else if (n > size_) {
-                T copy = value;
+            } else if (n > size_) {     
+                T copy = value; // заполняем новые ячейки массива значением value
+                                //например int copy = 5, значит все новые ячейки будут иметь значение 5
+                                //если value не указано, то по умолчанию будет 0.
+                                //так как value = T{}
                 reserve(n);                   // гарантируем, что места хватит
                 for (int i = size_; i < n; ++i) {
                     data_[i] = copy;         // заполняем новые клетки
@@ -77,7 +101,7 @@ class MyVector{
             // если n == size_ — ничего не делаем
         }
 
-        void insert(int pos, const T& value) {
+        void insert(size_t pos, const T& value) {
             if (pos > size_) throw std::out_of_range("insert: bad position");
             T copy = value;
 
@@ -85,7 +109,7 @@ class MyVector{
                 reserve(capacity_ == 0 ? 1 : capacity_ * 2);  // нужно место под новый элемент
             }
 
-            for (int i = size_; i > pos; --i) {
+            for (size_t i = size_; i > pos; --i) {
                 data_[i] = data_[i - 1];     // сдвигаем элементы вправо
             }
             data_[pos] = copy;              // кладём value на освободившееся место
@@ -97,26 +121,15 @@ class MyVector{
             return data_[i];
         }
 
-        MyVector& operator=(const MyVector& other) {
-            if (this == &other) return *this;    // самоприсваивание: ничего не делаем
 
-            T* new_data = new T[other.size_];            // сначала выделяем новый массив
-            for (int i = 0; i < other.size_; ++i) {
-                new_data[i] = other.data_[i];               // копируем элементы оригинала
-            }
-            delete[] data_;                        // освобождаем СТАРЫЙ массив
-            data_ = new_data;                         // переключаемся на новый
-            size_ = other.size_;
-            capacity_ = other.size_;
-            return *this;
-        }
-        T& at(int i) { //Да, это то же, что и operator, но без неопределенног поведения в случае выхода за границы массива
-            if (i < 0 || i >= size_) throw std::out_of_range("at: index out of range"); //throw — резкий выход из функции
+
+        T& at(size_t i) { //Да, это то же, что и operator, но без неопределенног поведения в случае выхода за границы массива
+            if (i < 0 || i >= size_) throw std::out_of_range("at: index out of range"); //throw — выход из функции до выполнения ломающего действия
             return data_[i];
         }
         const T& operator[](int i) const { return data_[i]; } //ещё одна версия оператора(магии), но вызывается только для const векторов
 
-        const T& at(int i) const {
+        const T& at(size_t i) const {
             if (i < 0 || i >= size_) throw std::out_of_range("at: index out of range");
             return data_[i];
         }
