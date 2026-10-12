@@ -45,20 +45,18 @@ class MyDeque{
         void pop_front() {
             if (empty()) throw std::out_of_range("pop_front: empty");
 
-            // Особый случай: в деке ровно один элемент.
-            // Неважно, в каком векторе он лежит — просто удаляем его оттуда.
+            // если в деке ровно один элемент, проверим оба вектора
             if (size() == 1) {
                 if (!front_.empty()) {
                     front_.pop_back();
                 } else {
                     back_.pop_back();
                 }
-                return;
+                return;//досрочно выйдет, break выдаст ошибку компилятора
             }
 
             if (front_.empty()) {
                 size_t half = back_.size() / 2;
-                // ... дальше всё как было
                 for (size_t i = half; i > 0; --i) {
                     front_.push_back(back_[i - 1]);
                 }
@@ -74,7 +72,7 @@ class MyDeque{
         void pop_back() {
             if (empty()) throw std::out_of_range("pop_back: empty");
 
-            // Особый случай: в деке ровно один элемент.
+            // также как в pop_front чекаем и в back_ и в front_
             if (size() == 1) {
                 if (!back_.empty()) {
                     back_.pop_back();
