@@ -100,7 +100,7 @@ class MyDeque{
         T& front() { //ссылка на первый логический элемент
             if (empty()) throw std::out_of_range("front: empty");
             // если front_ непуст — первый логический элемент лежит в front_.back()
-            if (!front_.empty()) return front_.back(); //ВНИМАНИЕ! Конкретно последний элемент массива вектора front_
+            if (!front_.empty()) return front_.back(); //ВНИМАНИЕ! Конкретно последний элемент вектора front_
                                                         //т.е. метод из myvector.h
             return back_.front();
         }
