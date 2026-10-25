@@ -3,6 +3,8 @@
 #include <fstream> //для работы с файлами(filestream)
 #include <iostream>
 #include <sstream>
+#include <queue>
+#include <algorithm>
 
 // ---------------------------------------------------------------
 // Конструкторы и служебные методы
@@ -147,6 +149,10 @@ bool Graph::remove_edge(int a, int b) {
         weight_[b][a] = 0;
     }
     return true;
+}
+
+bool Graph::linked_undirected(int u, int v) const { //слабая связность(игнорим вершины)
+    return is_edge_[u][v] || is_edge_[v][u];
 }
 
 std::vector<int> Graph::vertices() const {
