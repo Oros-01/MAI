@@ -3,8 +3,6 @@
 #include <fstream> //для работы с файлами(filestream)
 #include <iostream>
 #include <sstream>
-#include <queue>
-#include <algorithm>
 
 // ---------------------------------------------------------------
 // Конструкторы и служебные методы
