@@ -11,29 +11,53 @@ class NodeType(enum.Enum):
 
 
 def gini(y: np.ndarray) -> float:
+    """
+    Computes Gini index for given set of labels
+    :param y: labels
+    :return: Gini impurity
+    """
     _, counts = np.unique(y, return_counts=True)
     probabilities = counts / len(y)
-    return 1.0 - np.sum(probabilities ** 2)
+    gini = 1.0 - np.sum(probabilities ** 2)
+    return gini
 
 
 def weighted_impurity(y_left: np.ndarray, y_right: np.ndarray) -> \
         tp.Tuple[float, float, float]:
+    """
+    Computes weighted impurity by averaging children impurities
+    :param y_left: left  partition
+    :param y_right: right partition
+    :return: averaged impurity, left child impurity, right child impurity
+    """
+    n_left = len(y_left)
+    n_right = len(y_right)
     left_impurity = gini(y_left)
     right_impurity = gini(y_right)
-    weighted = (len(y_left) * left_impurity + len(y_right) * right_impurity) / (len(y_left) + len(y_right))
-    return weighted, left_impurity, right_impurity
+    weighted_impurity = (n_left * left_impurity + n_right * right_impurity) / (n_left + n_right)
+    return weighted_impurity, left_impurity, right_impurity
 
 
 def create_split(feature_values: np.ndarray, threshold: float) -> tp.Tuple[np.ndarray, np.ndarray]:
+    """
+    splits given 1-d array according to relation to threshold into two subarrays
+    :param feature_values: feature values extracted from data
+    :param threshold: value to compare with
+    :return: two sets of indices
+    """
     left_idx = np.where(feature_values <= threshold)[0]
     right_idx = np.where(feature_values > threshold)[0]
     return left_idx, right_idx
 
 
 class MyDecisionTreeNode:
+    """
+    Auxiliary class serving as representation of a decision tree node
+    """
+
     def __init__(
             self,
-            meta,
+            meta: 'MyDecisionTreeClassifier',
             depth,
             node_type: NodeType = NodeType.REGULAR,
             predicted_class: tp.Optional[tp.Union[int, str]] = None,
@@ -55,6 +79,12 @@ class MyDecisionTreeNode:
         self._impurity = impurity
 
     def _best_split(self, X: np.ndarray, y: np.ndarray):
+        """
+        finds best split
+        :param X: Data, passed to node
+        :param y: labels
+        :return: best feature, best threshold, left child impurity, right child impurity
+        """
         lowest_impurity = np.inf
         best_feature_id = None
         best_threshold = None
@@ -79,6 +109,12 @@ class MyDecisionTreeNode:
         return best_feature_id, best_threshold, lowest_left_child_impurity, lowest_right_child_impurity
 
     def fit(self, X: np.ndarray, y: np.ndarray):
+        """
+        recursively fits a node, providing it with predicted class or split condition
+        :param X: Data
+        :param y: labels
+        :return: fitted node
+        """
         if (
                 self._depth >= self._meta.max_depth
                 or len(y) < self._meta.min_samples_split
@@ -93,13 +129,11 @@ class MyDecisionTreeNode:
 
         self._feature_id, self._threshold, left_imp, right_imp = self._best_split(X, y)
         left_idx, right_idx = create_split(X[:, self._feature_id], self._threshold)
-
         self._left_subtree = MyDecisionTreeNode(
             meta=self._meta,
             depth=self._depth + 1,
             impurity=left_imp
         ).fit(X[left_idx], y[left_idx])
-
         self._right_subtree = MyDecisionTreeNode(
             meta=self._meta,
             depth=self._depth + 1,
@@ -108,6 +142,11 @@ class MyDecisionTreeNode:
         return self
 
     def predict(self, x: np.ndarray):
+        """
+        Predicts class for a single object
+        :param x: object of shape (n_features, )
+        :return: class assigned to object
+        """
         if self._node_type is NodeType.TERMINAL:
             return self._predicted_class
         if x[self._feature_id] <= self._threshold:
@@ -115,6 +154,11 @@ class MyDecisionTreeNode:
         return self._right_subtree.predict(x)
 
     def predict_proba(self, x: np.ndarray):
+        """
+        Predicts probability for a single object
+        :param x: object of shape (n_features, )
+        :return: vector of probabilities assigned to object
+        """
         if self._node_type is NodeType.TERMINAL:
             return self._class_proba
         if x[self._feature_id] <= self._threshold:
@@ -123,6 +167,11 @@ class MyDecisionTreeNode:
 
 
 class MyDecisionTreeClassifier:
+    """
+    Class analogous to sklearn implementation of decision tree classifier with Gini impurity criterion,
+    named in a manner avoiding collisions
+    """
+
     def __init__(
             self,
             max_depth: tp.Optional[int] = None,
@@ -137,13 +186,24 @@ class MyDecisionTreeClassifier:
         self._n_classes = 0
 
     def fit(self, X: np.ndarray, y: np.ndarray):
-        self._n_classes = int(np.max(y)) + 1   # ← ключевая правка!
-        self.root = MyDecisionTreeNode(self, 1)  # ← пересоздаём корень на повторный fit
+        """
+        starts recursive process of node criterion fitting from the root
+        :param X: Data
+        :param y: labels
+        :return: fitted self
+        """
+        self._n_classes = int(np.max(y)) + 1
+        self.root = MyDecisionTreeNode(self, 1)
         self.root.fit(X, y)
         self._is_trained = True
         return self
 
     def predict(self, X: np.ndarray) -> np.ndarray:
+        """
+        Predicts class for a sequence of objects
+        :param x: Data
+        :return: classes assigned to each object
+        """
         if not self._is_trained:
             raise RuntimeError('predict call on untrained model')
         X = np.asarray(X)
@@ -152,6 +212,11 @@ class MyDecisionTreeClassifier:
         return np.array([self.root.predict(x) for x in X])
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
+        """
+        Predicts class for a sequence of objects
+        :param x: Data
+        :return: probabilities of all classes for each object
+        """
         if not self._is_trained:
             raise RuntimeError('predict call on untrained model')
         X = np.asarray(X)
