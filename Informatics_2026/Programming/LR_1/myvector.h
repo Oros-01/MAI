@@ -12,7 +12,7 @@ class MyVector{
         explicit MyVector(size_t n, const T& value = T{}): data_(new T[n]), size_(n), capacity_(n) {
             for (size_t i = 0; i < n; ++i) {
                 data_[i] = value;
-            }
+            }//explicit запрещает неявные преобразования типов.
         } //конструктор с заданными параметрами
         
 
