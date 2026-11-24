@@ -66,7 +66,7 @@ bool load_network(const std::string& fileName, Network& net) {
         return false;
     }
 
-    // Первая строка — "<источник> <сток>".
+    // Первая строка — "<источник> <сток>", дальше матрица N x N.
     if (table.size() < 2 || table[0].size() < 2) {
         return false;
     }
@@ -74,70 +74,26 @@ bool load_network(const std::string& fileName, Network& net) {
     net.source = static_cast<int>(table[0][0]);
     net.sink = static_cast<int>(table[0][1]);
 
-    // Тело файла — всё, кроме строки заголовка.
     const std::vector<std::vector<long long>> body(table.begin() + 1, table.end());
+    net.n = static_cast<int>(body.size());
 
-    // Определяем формат тела.
-    // Если каждая строка имеет длину, равную количеству строк, — это
-    // квадратная матрица N x N. Иначе — списки смежности.
-    bool looks_like_matrix = true;
+    // Проверяем, что тело файла — действительно квадратная матрица.
     for (const std::vector<long long>& row : body) {
-        if (static_cast<int>(row.size()) != static_cast<int>(body.size())) {
-            looks_like_matrix = false;
-            break;
-        }
-    }
-
-    if (looks_like_matrix) {
-        // Формат 1: матрица пропускных способностей.
-        net.n = static_cast<int>(body.size());
-        net.cap.assign(net.n + 1, std::vector<long long>(net.n + 1, 0));
-
-        for (int u = 1; u <= net.n; ++u) {
-            for (int v = 1; v <= net.n; ++v) {
-                net.cap[u][v] = body[u - 1][v - 1];
-            }
-        }
-    } else {
-        // Формат 2: списки смежности.
-        // Строка выглядит так:  <вершина> <сосед> <вес> <сосед> <вес> ...
-        int max_vertex = 0;
-        for (const std::vector<long long>& row : body) {
-            max_vertex = std::max(max_vertex, static_cast<int>(row[0]));
-            for (std::size_t k = 1; k + 1 < row.size(); k += 2) {
-                max_vertex = std::max(max_vertex, static_cast<int>(row[k]));
-            }
-        }
-
-        net.n = std::max(max_vertex, std::max(net.source, net.sink));
-        if (net.n <= 0) {
+        if (static_cast<int>(row.size()) != net.n) {
             return false;
         }
-        net.cap.assign(net.n + 1, std::vector<long long>(net.n + 1, 0));
+    }
 
-        for (const std::vector<long long>& row : body) {
-            const int u = static_cast<int>(row[0]);
-            for (std::size_t k = 1; k + 1 < row.size(); k += 2) {
-                const int v = static_cast<int>(row[k]);
-                const long long capacity = row[k + 1];
-
-                // Петли в транспортной сети не имеют смысла — пропускаем.
-                if (u == v || u < 1 || u > net.n || v < 1 || v > net.n) {
-                    continue;
-                }
-                net.cap[u][v] = capacity;
-            }
+    net.cap.assign(net.n + 1, std::vector<long long>(net.n + 1, 0));
+    for (int u = 1; u <= net.n; ++u) {
+        for (int v = 1; v <= net.n; ++v) {
+            net.cap[u][v] = body[u - 1][v - 1];
         }
     }
 
-    // Источник и сток должны быть вершинами этой сети и различаться.
-    if (net.source < 1 || net.source > net.n) {
-        return false;
-    }
-    if (net.sink < 1 || net.sink > net.n) {
-        return false;
-    }
-    if (net.source == net.sink) {
+    if (net.source < 1 || net.source   > net.n ||
+        net.sink < 1 || net.sink > net.n ||
+        net.source == net.sink) {
         return false;
     }
 
@@ -147,7 +103,7 @@ bool load_network(const std::string& fileName, Network& net) {
 // =====================================================================
 //  ЧАСТЬ 2. Карта высот
 // =====================================================================
-
+  
 bool load_map(const std::string& fileName, HeightMap& map) {
     std::vector<std::vector<long long>> table;
     if (!read_numbers(fileName, table)) {
