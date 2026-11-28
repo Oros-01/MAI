@@ -1,0 +1,2 @@
+version,device name,recording epoch time,recording time,recording timezone,platform,appVersion,device id,sensors,sampleRateMs,standardisation,platform version
+3,Redmi Note 8 Pro,1793432772127,2026-10-31_07-46-12,Europe/Moscow,android,1.68,7ed16918-10ae-450c-84be-d6ad404cfe8e,Accelerometer|Gravity|Gyroscope|Annotation|TotalAcceleration|GyroscopeUncalibrated|AccelerometerUncalibrated,10|10|10||10|10|10,false,30
